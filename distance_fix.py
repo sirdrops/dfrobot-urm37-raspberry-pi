@@ -8,10 +8,8 @@ ser = serial.Serial(
 	stopbits=serial.STOPBITS_ONE,
 	bytesize=serial.EIGHTBITS
 )
-err = False
 
 def read_dist(bit1,bit2):
-	global err
 	try:
 		data = b'\x22\x00\x00\x22'
 		ser.write(data)
@@ -23,7 +21,8 @@ def read_dist(bit1,bit2):
 	except Exception as e:
 		print(e)
 		print("error, bit move one right all")
-		err = True
+		ser.close()
+		ser.open()
 
 
 while True:
@@ -31,8 +30,3 @@ while True:
 
 	read_dist(1,2)
 
-	while err:
-
-		time.sleep(0.2)
-
-		read_dist(2,3)
