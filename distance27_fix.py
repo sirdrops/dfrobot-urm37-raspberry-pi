@@ -11,21 +11,30 @@ ser = serial.Serial(
 
 def read_dist():
 	try:
-		data = b'\x22\x00\x00\x22'
+		data = bytearray()
+		data.append(0x22)
+		data.append(0x00)
+		data.append(0x00)
+		data.append(0x22)
+
 		ser.write(data)
-		data = ser.readline(4)
-		print(data[0],data[1],data[2],data[3])
-		distvalue = data[1] << 8
-		distvalue = int(distvalue) + int(data[2])
-		print(distvalue)
+		receive = ser.readline(4)
+
+		high = ord(receive[1])
+		high = int(high)
+		high = high << 8
+
+		low = ord(receive[2])
+		low = int(low)
+
+		distance = high + low
+		print distance
+
 	except Exception as e:
-		print(e)
+		print e
 		ser.close()
 		ser.open()
 
-
 while True:
 	time.sleep(0.2)
-
 	read_dist()
-
